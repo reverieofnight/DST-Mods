@@ -1,7 +1,7 @@
-name = '移除温蒂的攻击系数弱化2'  -- 名字
+name = '移除温蒂的攻击系数弱化'  -- 名字
 description = '移除温蒂的攻击系数弱化，使温蒂无法使用姐姐时单人撸boss时不至于太累' -- 描述
 author = '雨夜' -- 作者
-version = '2.0' -- 版本号
+version = '2.1' -- 版本号
 forumthread = '' -- 论坛链接
 icon_atlas = 'modicon.xml'
 icon = 'modicon.tex' -- 图标
