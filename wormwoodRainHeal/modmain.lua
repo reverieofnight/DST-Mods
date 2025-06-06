@@ -1,22 +1,23 @@
 -- modmain.lua
-local function CheckForRain(inst)
-    if not GLOBAL.TheWorld.state.israining and inst:HasTag("activerain") then
-        inst.components.health:StartRegen(0, 0)
-        inst:AddTag("notactiverain")
-        inst:RemoveTag("activerain")
-    end
-    if GLOBAL.TheWorld.state.israining and inst:HasTag("notactiverain") then
-        inst.components.health:StartRegen(2, 1)
-        inst:AddTag("activerain")
-        inst:RemoveTag("notactiverain")
-    end
-end
+
 AddPrefabPostInit("wormwood", function(inst)
     if not GLOBAL.TheWorld.ismastersim then
         return
     end
-    inst:AddTag("notactiverain")
+    local healTimer = nil
     inst:DoPeriodicTask(5.0, function(inst)
-        CheckForRain(inst)
+        local israining = GLOBAL.TheWorld.state.israining
+        -- 停止下雨，结束治疗
+        if healTimer ~= nil and not israining then
+            healTimer:Cancel()
+            healTimer = nil
+        end
+        -- 下雨，开始治疗
+        if israining and healTimer == nil then
+            healTimer = inst:DoPeriodicTask(2.0,function(inst)
+                inst.components.health:DoDelta(4,false,"redamulet")
+            end)
+        end
+
     end)
 end)
