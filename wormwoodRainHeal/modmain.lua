@@ -43,12 +43,16 @@ local function checkPlantCertificate(owner)
     if owner.prefab == 'wormwood' then
         return
     end
-    print('检查植物勋章')
     if owner:HasTag("has_transplant_medal") then
         rainHeal(true, owner)
     end
     if not owner:HasTag("has_transplant_medal") then
         rainHeal(false, owner)
+    end
+end
+local function printTable(t)
+    for k, v in pairs(t) do
+        print(k, v)
     end
 end
 local function ListenMedalEvent(inst)
@@ -59,12 +63,12 @@ local function ListenMedalEvent(inst)
         inst:DoTaskInTime(1, checkPlantCertificate(data.owner))
     end)
     inst:ListenForEvent("itemget", function(inst, data)
-        if inst.parent ~= nil then
+        if data.item.prefab == 'transplant_certificate' and inst.parent ~= nil then
             inst:DoTaskInTime(1, checkPlantCertificate(inst.parent))
         end
     end)
     inst:ListenForEvent("itemlose", function(inst, data)
-        if inst.parent ~= nil then
+        if data.prev_item.prefab == 'transplant_certificate' and inst.parent ~= nil then
             inst:DoTaskInTime(1, checkPlantCertificate(inst.parent))
         end
     end)

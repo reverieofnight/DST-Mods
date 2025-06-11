@@ -1,7 +1,7 @@
 name = '沃姆伍德可以通过雨水治疗自己'  -- 名字
-description = '我们可爱的植物人既然是植物，居然不能在下雨时治疗自己，这合理吗，这不合理' -- 描述
+description = '我们可爱的植物人既然是植物，居然不能在下雨时治疗自己，这合理吗，这不合理\n新增特性：\n联动能力勋章，佩戴植物勋章也可以享受到雨疗效果。' -- 描述
 author = '雨夜' -- 作者
-version = '2.0' -- 版本号
+version = '3.0' -- 版本号
 forumthread = '' -- 论坛链接
 icon_atlas = 'modicon.xml'
 icon = 'modicon.tex' -- 图标
