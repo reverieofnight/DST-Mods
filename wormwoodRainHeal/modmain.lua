@@ -52,7 +52,7 @@ local function checkPlantCertificate(owner)
 end
 local function printTable(t)
     for k, v in pairs(t) do
-        print(k, v)
+        print(k,'=', v)
     end
 end
 local function ListenMedalEvent(inst)
@@ -63,12 +63,15 @@ local function ListenMedalEvent(inst)
         inst:DoTaskInTime(1, checkPlantCertificate(data.owner))
     end)
     inst:ListenForEvent("itemget", function(inst, data)
-        if data.item.prefab == 'transplant_certificate' and inst.parent ~= nil then
+        if data.item and data.item.prefab == 'transplant_certificate' and inst.parent ~= nil then
             inst:DoTaskInTime(1, checkPlantCertificate(inst.parent))
         end
     end)
     inst:ListenForEvent("itemlose", function(inst, data)
-        if data.prev_item.prefab == 'transplant_certificate' and inst.parent ~= nil then
+        if data.prev_item and data.prev_item.prefab == 'transplant_certificate' and inst.parent ~= nil then
+            inst:DoTaskInTime(1, checkPlantCertificate(inst.parent))
+        end
+        if data.item and data.item.prefab == 'transplant_certificate' and inst.parent ~= nil then
             inst:DoTaskInTime(1, checkPlantCertificate(inst.parent))
         end
     end)
