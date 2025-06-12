@@ -39,7 +39,7 @@ AddPrefabPostInit("wormwood", function(inst)
 end)
 
 -- 联动能力勋章内容,佩戴植物勋章也可享受雨疗效果
-local function checkPlantCertificate(owner)
+local function checkPlantCertificate(owner,type)
     if owner.prefab == 'wormwood' then
         return
     end
@@ -57,36 +57,45 @@ local function printTable(t)
 end
 local function ListenMedalEvent(inst)
     inst:ListenForEvent("equipped", function(inst, data)
-        inst:DoTaskInTime(1, checkPlantCertificate(data.owner))
+        checkPlantCertificate(data.owner,'equipped')
     end)
     inst:ListenForEvent("unequipped", function(inst, data)
-        inst:DoTaskInTime(1, checkPlantCertificate(data.owner))
+        checkPlantCertificate(data.owner,'unequipped')
     end)
     inst:ListenForEvent("itemget", function(inst, data)
         if data.item and data.item.prefab == 'transplant_certificate' and inst.parent ~= nil then
-            inst:DoTaskInTime(1, checkPlantCertificate(inst.parent))
+            checkPlantCertificate(inst.parent,'itemget')
         end
     end)
     inst:ListenForEvent("itemlose", function(inst, data)
         if data.prev_item and data.prev_item.prefab == 'transplant_certificate' and inst.parent ~= nil then
-            inst:DoTaskInTime(1, checkPlantCertificate(inst.parent))
-        end
-        if data.item and data.item.prefab == 'transplant_certificate' and inst.parent ~= nil then
-            inst:DoTaskInTime(1, checkPlantCertificate(inst.parent))
+            checkPlantCertificate(inst.parent,'itemlose')
         end
     end)
 end
 
 
 AddPrefabPostInit("transplant_certificate", function(inst)
+    if not GLOBAL.TheWorld.ismastersim then
+        return
+    end
     ListenMedalEvent(inst)
 end)
 AddPrefabPostInit("multivariate_certificate", function(inst)
+    if not GLOBAL.TheWorld.ismastersim then
+        return
+    end
     ListenMedalEvent(inst)
 end)
 AddPrefabPostInit("medium_multivariate_certificate", function(inst)
+    if not GLOBAL.TheWorld.ismastersim then
+        return
+    end
     ListenMedalEvent(inst)
 end)
 AddPrefabPostInit("large_multivariate_certificate", function(inst)
+    if not GLOBAL.TheWorld.ismastersim then
+        return
+    end
     ListenMedalEvent(inst)
 end)
