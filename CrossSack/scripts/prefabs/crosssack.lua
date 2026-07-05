@@ -70,10 +70,10 @@ local function fn()
 
     inst.MiniMapEntity:SetIcon("crosssack.tex")
 
-    inst.AnimState:SetBank("backpack1")
+    inst.AnimState:SetBank("elaina_bag")
     inst.AnimState:SetBuild("elaina_bag")
     inst.AnimState:PlayAnimation("idle")
-    inst:AddTag("backpack")
+
     inst:AddTag("crosssack")
 
     MakeInventoryFloatable(inst, "med", 0.1, 0.65)
