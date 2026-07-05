@@ -31,6 +31,16 @@ configuration_options = {
         default = 2,
     },
     {
+        name = "KEEPFRESH",
+        label = "KeepFresh (保鲜)",
+        hover = "Keep the food fresh.",
+        options = {
+            { description = "Off(关闭)", data = false, },
+            { description = "On(开启)", data = true, },
+        },
+        default = false,
+    },
+    {
         name = "RECIPE",
         label = "Recipe (耗材)",
         hover = "Recipe cost.",

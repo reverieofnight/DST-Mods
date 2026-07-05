@@ -32,6 +32,9 @@ AddMinimapAtlas("minimap/crosssack.xml")
 
 -- [Container Widget Setup]
 local BAGSIZE = GetModConfigData("BAGSIZE")
+local KEEPFRESH = GetModConfigData("KEEPFRESH")
+
+GLOBAL.TUNING.ROOMCAR_BIGBAG_KEEPFRESH = KEEPFRESH
 
 local params = {}
 if BAGSIZE == 1 then

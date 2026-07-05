@@ -14,6 +14,23 @@ local function onopen(inst)
         inst.components.inventoryitem.imagename = "crosssack_open"
         inst.components.inventoryitem.atlasname = "images/inventoryimages/crosssack_open.xml"
     end
+    if TUNING.ROOMCAR_BIGBAG_KEEPFRESH then
+        for i = 1, inst.components.container:GetNumSlots() do
+            local item = inst.components.container.slots[i]
+            if item ~= nil then
+                if item:HasTag("spoiled") then
+                    item.components.perishable:SetPercent(1)
+                elseif item:HasTag("stale") then
+                    item.components.perishable:SetPercent(1)
+                elseif item:HasTag("fresh") then
+                    item.components.perishable:SetPercent(1)
+                end
+                if item.components.finiteuses then
+                    item.components.finiteuses:SetPercent(1)
+                end
+            end
+        end
+    end
 end
 
 local function onclose(inst)
@@ -105,6 +122,15 @@ local function fn()
     inst.components.container:WidgetSetup("crosssack")
     inst.components.container.onopenfn = onopen
     inst.components.container.onclosefn = onclose
+
+    if TUNING.ROOMCAR_BIGBAG_KEEPFRESH then
+        if inst.components.preserver == nil then
+            inst:AddComponent("preserver")
+        end
+        inst.components.preserver:SetPerishRateMultiplier(function(inst, item)
+            return (item ~= nil) and 0 or nil
+        end)
+    end
 
     MakeHauntableLaunch(inst)
     return inst
