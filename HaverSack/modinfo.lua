@@ -23,8 +23,8 @@ client_only_mod = false
 server_filter_tags = {"Haversack", "RainyNight", "nicebigbag"}
 
 forumthread = ""
-icon_atlas = "haversackicon.xml"
-icon = "haversackicon.tex"
+icon_atlas = "modicon.xml"
+icon = "modicon.tex"
 
 priority = 0
 configuration_options = {
