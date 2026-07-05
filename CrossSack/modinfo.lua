@@ -62,6 +62,19 @@ configuration_options = {
         default = false,
     },
     {
+        name = "WALKSPEED",
+        label = "Walk Speed (移速)",
+        hover = "Walk speed while taking this bag.",
+        options = {
+            { description = "Much Slower(超慢)", data = 0.5, },
+            { description = "Slower(慢)", data = 0.75, },
+            { description = "No Change(不变)", data = 1, },
+            { description = "Faster(快)", data = 1.25, },
+            { description = "Much Faster(超快)", data = 1.5, },
+        },
+        default = 0.75,
+    },
+    {
         name = "RECIPE",
         label = "Recipe (耗材)",
         hover = "Recipe cost.",
