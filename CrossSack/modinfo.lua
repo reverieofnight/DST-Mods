@@ -2,7 +2,19 @@
 name = "CrossSack（挎包）"
 author = "rainyNight"
 version = "1.0.0"
-description = "一个可调节大小的挎包，支持24/32/48/64格物品栏。\nA adjustable size backpack with 24/32/48/64 slots."
+description = "一款可自定义的多功能挎包，提供以下可配置特性：\n\
+  · 背包容量：支持24/32/48/64格（四档可调）\n\
+  · 食物保鲜：背包内食物永不腐坏\n\
+  · 包中包：允许将其他背包放入挎包中\n\
+  · UI拖拽：右键拖拽移动背包界面位置\n\
+  · 移速调节：可调整携带时的移动速度\n\
+  · 配方耗材：5档配方成本可选\n\n\
+与原mod「A Big Bag」的功能差异：\n\
+- 移除：发光、防雨、快速采集、暖石调温、自动堆满、月圆刷新、排序按钮、多语言\n\
+- 变更：拖拽改为直接右键、配方移至储物栏，靠近二本解锁\n\n\
+本mod是基于 Roomcar & Sunny 开发的「A Big Bag（大背包）」修改而来的衍生作品。\n\
+本mod与原mod理论上可同时开启，但兼容性未经充分测试，请谨慎选择同时开启。\n\
+【版权声明】原mod © Roomcar & Sunny，基于 GPL v3 协议开源；本衍生mod遵循相同协议。"
 
 api_version = 10
 dst_compatible = true

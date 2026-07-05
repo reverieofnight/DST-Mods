@@ -14,23 +14,8 @@ local function onopen(inst)
         inst.components.inventoryitem.imagename = "crosssack_open"
         inst.components.inventoryitem.atlasname = "images/inventoryimages/crosssack_open.xml"
     end
-    if TUNING.CROSSSACK_KEEPFRESH then
-        for i = 1, inst.components.container:GetNumSlots() do
-            local item = inst.components.container.slots[i]
-            if item ~= nil then
-                if item:HasTag("spoiled") then
-                    item.components.perishable:SetPercent(1)
-                elseif item:HasTag("stale") then
-                    item.components.perishable:SetPercent(1)
-                elseif item:HasTag("fresh") then
-                    item.components.perishable:SetPercent(1)
-                end
-                if item.components.finiteuses then
-                    item.components.finiteuses:SetPercent(1)
-                end
-            end
-        end
-    end
+    -- KEEPFRESH: 仅保鲜，不恢复新鲜度/耐久
+    -- 保鲜逻辑由 preserver 组件在 modmain.lua 中处理
 end
 
 local function onclose(inst)
