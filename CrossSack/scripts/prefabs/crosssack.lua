@@ -14,7 +14,7 @@ local function onopen(inst)
         inst.components.inventoryitem.imagename = "crosssack_open"
         inst.components.inventoryitem.atlasname = "images/inventoryimages/crosssack_open.xml"
     end
-    if TUNING.ROOMCAR_BIGBAG_KEEPFRESH then
+    if TUNING.CROSSSACK_KEEPFRESH then
         for i = 1, inst.components.container:GetNumSlots() do
             local item = inst.components.container.slots[i]
             if item ~= nil then
@@ -110,7 +110,7 @@ local function fn()
     inst.components.equippable.equipslot = EQUIPSLOTS.BACK or EQUIPSLOTS.BODY
     inst.components.equippable:SetOnEquip(onequip)
     inst.components.equippable:SetOnUnequip(onunequip)
-    inst.components.equippable.walkspeedmult = TUNING.ROOMCAR_BIGBAG_WALKSPEED
+    inst.components.equippable.walkspeedmult = TUNING.CROSSSACK_WALKSPEED
 
     inst:AddComponent("inspectable")
     inst:AddComponent("inventoryitem")
@@ -126,12 +126,12 @@ local function fn()
     local _CanTakeItemInSlot = inst.components.container.CanTakeItemInSlot
     inst.components.container.CanTakeItemInSlot = function(self, item, slot)
         if item:HasTag("crosssack") then
-            return TUNING.ROOMCAR_BIGBAG_BAGINBAG
+            return TUNING.CROSSSACK_BAGINBAG
         end
         return _CanTakeItemInSlot(self, item, slot)
     end
 
-    if TUNING.ROOMCAR_BIGBAG_KEEPFRESH then
+    if TUNING.CROSSSACK_KEEPFRESH then
         if inst.components.preserver == nil then
             inst:AddComponent("preserver")
         end

@@ -34,13 +34,13 @@ AddMinimapAtlas("minimap/crosssack.xml")
 local BAGSIZE = GetModConfigData("BAGSIZE")
 local KEEPFRESH = GetModConfigData("KEEPFRESH")
 
-GLOBAL.TUNING.ROOMCAR_BIGBAG_KEEPFRESH = KEEPFRESH
+GLOBAL.TUNING.CROSSSACK_KEEPFRESH = KEEPFRESH
 local CONTAINERDRAG_SWITCH = GetModConfigData("CONTAINERDRAG_SWITCH")
-GLOBAL.TUNING.ROOMCAR_BIGBAG_CONTAINERDRAG_SWITCH = CONTAINERDRAG_SWITCH
+GLOBAL.TUNING.CROSSSACK_CONTAINERDRAG_SWITCH = CONTAINERDRAG_SWITCH
 local BAGINBAG = GetModConfigData("BAGINBAG")
-GLOBAL.TUNING.ROOMCAR_BIGBAG_BAGINBAG = BAGINBAG
+GLOBAL.TUNING.CROSSSACK_BAGINBAG = BAGINBAG
 local WALKSPEED = GetModConfigData("WALKSPEED")
-GLOBAL.TUNING.ROOMCAR_BIGBAG_WALKSPEED = WALKSPEED
+GLOBAL.TUNING.CROSSSACK_WALKSPEED = WALKSPEED
 
 local params = {}
 if BAGSIZE == 1 then
@@ -51,7 +51,6 @@ if BAGSIZE == 1 then
             animbank = "ui_krampusbag_2x8",
             animbuild = "ui_bigbag_3x8",
             pos = Vector3(-180, -75, 0),
-            dragtyp = "crosssack",
         },
         issidewidget = true,
         type = "pack",
@@ -70,7 +69,6 @@ elseif BAGSIZE == 2 then
             animbank = "ui_krampusbag_2x8",
             animbuild = "ui_bigbag_4x8",
             pos = Vector3(-180, -75, 0),
-            dragtyp = "crosssack",
         },
         issidewidget = true,
         type = "pack",
@@ -94,7 +92,6 @@ elseif BAGSIZE == 3 then
             bgatlas = "images/bigbagbg_8x6.xml",
             bgimage = "bigbagbg_8x6.tex",
             pos = Vector3(-180, -75, 0),
-            dragtyp = "crosssack",
         },
         issidewidget = true,
         type = "pack",
@@ -120,7 +117,6 @@ else
             bgatlas = "images/bigbagbg_8x8.xml",
             bgimage = "bigbagbg_8x8.tex",
             pos = Vector3(-180, -75, 0),
-            dragtyp = "crosssack",
         },
         issidewidget = true,
         type = "pack",
@@ -325,7 +321,7 @@ if CONTAINERDRAG_SWITCH then
             oldOpen(self, container, doer, ...)
             if self.container and self.container.replica.container then
                 local widget = self.container.replica.container:GetWidget()
-                if widget and widget.dragtyp == "crosssack" then
+                if widget and container.prefab == "crosssack" then
                     -- 设置容器坐标（可装备容器第一次打开延迟处理）
                     local newpos = GetCrossSackDragPos("crosssack") or default_pos["crosssack"]
                     if newpos then
