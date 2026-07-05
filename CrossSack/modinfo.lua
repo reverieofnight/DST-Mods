@@ -52,6 +52,16 @@ configuration_options = {
         default = true,
     },
     {
+        name = "BAGINBAG",
+        label = "Bag in bag(包中包)",
+        hover = "Put the backpack into the crosssack.",
+        options = {
+            { description = "Off(关闭)", data = false, },
+            { description = "On(开启)", data = true, },
+        },
+        default = false,
+    },
+    {
         name = "RECIPE",
         label = "Recipe (耗材)",
         hover = "Recipe cost.",

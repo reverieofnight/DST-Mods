@@ -122,6 +122,13 @@ local function fn()
     inst.components.container:WidgetSetup("crosssack")
     inst.components.container.onopenfn = onopen
     inst.components.container.onclosefn = onclose
+    local _CanTakeItemInSlot = inst.components.container.CanTakeItemInSlot
+    inst.components.container.CanTakeItemInSlot = function(self, item, slot)
+        if item:HasTag("crosssack") then
+            return TUNING.ROOMCAR_BIGBAG_BAGINBAG
+        end
+        return _CanTakeItemInSlot(self, item, slot)
+    end
 
     if TUNING.ROOMCAR_BIGBAG_KEEPFRESH then
         if inst.components.preserver == nil then
