@@ -11,7 +11,7 @@ local assets=
 --------------------------------------------------------------------------
 local function getitem_nicebigbag(inst, data)
     if data and data.item ~= nil then
-		if TUNING.ROOMCAR_BIGBAG_FRESH then
+		if TUNING.ROOMCAR_HAVERSACK_FRESH then
 			if data.item.components.perishable and data.item.components.perishable:GetPercent() < 1 then
                 data.item.components.perishable:SetPercent(1)
 				inst.SoundEmitter:PlaySound("dontstarve/common/cookingpot_finish")
@@ -30,12 +30,12 @@ local function getitem_nicebigbag(inst, data)
             end
 		end
 
-        if data.item.components.stackable and not data.item.components.stackable:IsFull() and TUNING.ROOMCAR_BIGBAG_STACK then
+        if data.item.components.stackable and not data.item.components.stackable:IsFull() and TUNING.ROOMCAR_HAVERSACK_STACK then
 			inst.SoundEmitter:PlaySound("dontstarve/wilson/plant_seeds")
             data.item.components.stackable:SetStackSize(data.item.components.stackable.maxsize)
         end
 		
-		if TUNING.ROOMCAR_BIGBAG_HEATROCKTEMPERATURE and data.item.prefab == "heatrock" then
+		if TUNING.ROOMCAR_HAVERSACK_HEATROCKTEMPERATURE and data.item.prefab == "heatrock" then
 			local currenttemp = data.item.components.temperature:GetCurrent()
 			if TheWorld.state.iswinter and currenttemp <= 25 then
 				data.item.components.temperature:SetTemperature(currenttemp + 40)
@@ -69,7 +69,7 @@ local function DoBenefit_nicebigbag(inst)
     if not TheWorld.state.isfullmoon then
 		return
 	else
-	if TUNING.NICE_BAGREFRESH and inst.components.container and not inst.components.container:IsEmpty() then
+	if TUNING.ROOMCAR_HAVERSACK_BAGREFRESH and inst.components.container and not inst.components.container:IsEmpty() then
 	local owner = inst.components.inventoryitem.owner
 	if owner ~= nil then
 	inst.components.container:Close()
@@ -163,13 +163,13 @@ end
 
 
 local function onequip(inst,owner)
-	if TUNING.ROOMCAR_BIGBAG_LIGHT then
+	if TUNING.ROOMCAR_HAVERSACK_LIGHT then
 		inst.Light:Enable(true)
 	end
 	
 	owner.AnimState:OverrideSymbol("backpack", "elaina_bag", "backpack")
 	owner.AnimState:OverrideSymbol("swap_body", "elaina_bag", "swap_body")
-	if TUNING.ROOMCAR_BIGBAG_PICK then
+	if TUNING.ROOMCAR_HAVERSACK_PICK then
 		owner:AddTag("fastpicker")  --蜘蛛快采
 		owner:AddTag("fastpick")    --成就快采
 	end
@@ -189,7 +189,7 @@ end
 
 local function onunequip(inst, owner)
     -- light
-    if TUNING.ROOMCAR_BIGBAG_LIGHT then
+    if TUNING.ROOMCAR_HAVERSACK_LIGHT then
         inst.Light:Enable(false)
     end
 	owner.AnimState:ClearOverrideSymbol("swap_body")
@@ -197,7 +197,7 @@ local function onunequip(inst, owner)
      if inst.components.container ~= nil then
 		inst.components.container:Close(owner)
 	end
-	if TUNING.ROOMCAR_BIGBAG_PICK then
+	if TUNING.ROOMCAR_HAVERSACK_PICK then
 		owner:RemoveTag("fastpick")
 		owner:RemoveTag("fastpicker")
 	end
@@ -230,7 +230,7 @@ local function fn()
 	
 	inst.MiniMapEntity:SetIcon("bigbag.tex")
 
-	if TUNING.ROOMCAR_BIGBAG_LIGHT then
+	if TUNING.ROOMCAR_HAVERSACK_LIGHT then
 		inst.entity:AddLight()
 		inst.Light:Enable(false)
 		inst.Light:SetRadius(0.25)
@@ -246,12 +246,12 @@ local function fn()
 	inst:AddTag("backpack")
     inst:AddTag("fridge")
     inst:AddTag("nocool")
-	if TUNING.ROOMCAR_BIGBAG_WATER then
+	if TUNING.ROOMCAR_HAVERSACK_WATER then
 		inst:AddTag("umbrella")
 		inst:AddTag("waterproofer")
 	end
-    inst:AddTag("nicebigbag")
-	if TUNING.ROOMCAR_BIGBAG_KEEPFRESH then
+    inst:AddTag("haver_sack")
+	if TUNING.ROOMCAR_HAVERSACK_KEEPFRESH then
 		inst:AddTag("keepfresh")
 	end
 	
@@ -273,7 +273,7 @@ local function fn()
     --------------------
     if not TheWorld.ismastersim then
 		inst.OnEntityReplicated = function(inst)
-        inst.replica.container:WidgetSetup("nicebigbag")
+        inst.replica.container:WidgetSetup("haver_sack")
 		inst.replica.container.onopenfn = onopen
 		inst.replica.container.onclosefn = onclose
         end
@@ -285,7 +285,7 @@ local function fn()
     -- (the really important ones will get replicated to the client through the replica system). 
     -- Visual things and tags that will always be added can go above this, though.
     --------------------
-	if TUNING.ROOMCAR_BIGBAG_KEEPFRESH then
+	if TUNING.ROOMCAR_HAVERSACK_KEEPFRESH then
 		if inst.components.preserver==nil then
 			inst:AddComponent("preserver")
 		end
@@ -299,7 +299,7 @@ local function fn()
     inst.components.equippable.equipslot = EQUIPSLOTS.BACK or EQUIPSLOTS.BODY
     inst.components.equippable:SetOnEquip(onequip)
     inst.components.equippable:SetOnUnequip(onunequip)
-    inst.components.equippable.walkspeedmult = TUNING.ROOMCAR_BIGBAG_WALKSPEED
+    inst.components.equippable.walkspeedmult = TUNING.ROOMCAR_HAVERSACK_WALKSPEED
     
 	inst:AddComponent("inspectable")
 	inst:AddComponent("inventoryitem")
@@ -308,7 +308,7 @@ local function fn()
     inst.components.inventoryitem.cangoincontainer = true -- [[can be carried]]!!!!!!!!!!!!!!!!!!!!
 	inst.components.inventoryitem.foleysound = "dontstarve/movement/foley/marblearmour"
 
-	if TUNING.ROOMCAR_BIGBAG_WATER then
+	if TUNING.ROOMCAR_HAVERSACK_WATER then
 		inst:AddComponent("waterproofer")
 	end
     -- inst.components.waterproofer:SetEffectiveness(0)
@@ -316,7 +316,7 @@ local function fn()
 	insulatorstate(inst)
 	
     inst:AddComponent("container")
-    inst.components.container:WidgetSetup("nicebigbag")
+    inst.components.container:WidgetSetup("haver_sack")
     inst.components.container.onopenfn = onopen
     inst.components.container.onclosefn = onclose
 	inst:ListenForEvent("itemget", getitem_nicebigbag)
@@ -329,4 +329,4 @@ end
 --------------------------------------------------------------------------
 --------------------------------------------------------------------------
 
-return Prefab("nicebigbag", fn, assets)
+return Prefab("haver_sack", fn, assets)

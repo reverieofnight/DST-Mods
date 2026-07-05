@@ -1,20 +1,20 @@
 GLOBAL.setmetatable(env,{__index=function(t,k) return GLOBAL.rawget(GLOBAL,k) end})
 
 -- [TUNING]--------------------
-TUNING.ROOMCAR_BIGBAG_LANG = GetModConfigData("LANG")
-TUNING.ROOMCAR_BIGBAG_STACK = GetModConfigData("STACK")
-TUNING.ROOMCAR_BIGBAG_FRESH = GetModConfigData("FRESH")
-TUNING.ROOMCAR_BIGBAG_KEEPFRESH = GetModConfigData("KEEPFRESH")
-TUNING.ROOMCAR_BIGBAG_LIGHT = GetModConfigData("LIGHT")
-TUNING.ROOMCAR_BIGBAG_RECIPE = GetModConfigData("RECIPE")
-TUNING.ROOMCAR_BIGBAG_WALKSPEED = GetModConfigData("WALKSPEED")
-TUNING.ROOMCAR_BIGBAG_CONTAINERDRAG_SWITCH = GetModConfigData("CONTAINERDRAG_SWITCH")
-TUNING.ROOMCAR_BIGBAG_BAGINBAG = GetModConfigData("BAGINBAG")
-TUNING.ROOMCAR_BIGBAG_HEATROCKTEMPERATURE = GetModConfigData("HEATROCKTEMPERATURE")
-TUNING.ROOMCAR_BIGBAG_WATER = GetModConfigData("BIGBAGWATER")
-TUNING.ROOMCAR_BIGBAG_PICK = GetModConfigData("BIGBAGPICK")
-TUNING.NICE_BIGBAGSIZE = GetModConfigData("NICEBIGBAGSIZE")
-TUNING.NICE_BAGREFRESH = GetModConfigData("NICEBAGREFRESH")
+TUNING.ROOMCAR_HAVERSACK_LANG = GetModConfigData("LANG")
+TUNING.ROOMCAR_HAVERSACK_STACK = GetModConfigData("STACK")
+TUNING.ROOMCAR_HAVERSACK_FRESH = GetModConfigData("FRESH")
+TUNING.ROOMCAR_HAVERSACK_KEEPFRESH = GetModConfigData("KEEPFRESH")
+TUNING.ROOMCAR_HAVERSACK_LIGHT = GetModConfigData("LIGHT")
+TUNING.ROOMCAR_HAVERSACK_RECIPE = GetModConfigData("RECIPE")
+TUNING.ROOMCAR_HAVERSACK_WALKSPEED = GetModConfigData("WALKSPEED")
+TUNING.ROOMCAR_HAVERSACK_CONTAINERDRAG_SWITCH = GetModConfigData("CONTAINERDRAG_SWITCH")
+TUNING.ROOMCAR_HAVERSACK_BAGINBAG = GetModConfigData("BAGINBAG")
+TUNING.ROOMCAR_HAVERSACK_HEATROCKTEMPERATURE = GetModConfigData("HEATROCKTEMPERATURE")
+TUNING.ROOMCAR_HAVERSACK_WATER = GetModConfigData("BIGBAGWATER")
+TUNING.ROOMCAR_HAVERSACK_PICK = GetModConfigData("BIGBAGPICK")
+TUNING.ROOMCAR_HAVERSACK_BIGBAGSIZE = GetModConfigData("NICEBIGBAGSIZE")
+TUNING.ROOMCAR_HAVERSACK_BAGREFRESH = GetModConfigData("NICEBAGREFRESH")
 -- [Prefab Files]--------------------
 PrefabFiles = {
 	"nicebigbag"
@@ -38,34 +38,52 @@ AddMinimapAtlas("minimap/bigbag.xml")
 
 --------------------------------------------------------------------------------------------------------------------------
 -- [Global Strings]
-if TUNING.ROOMCAR_BIGBAG_LANG == 1 then
-	GLOBAL.STRINGS.bigbag_BUTTON = "整理"
+if TUNING.ROOMCAR_HAVERSACK_LANG == 1 then
+	GLOBAL.STRINGS.haver_sack_BUTTON = "整理"
 else
-	GLOBAL.STRINGS.bigbag_BUTTON = "Sort"
+	GLOBAL.STRINGS.haver_sack_BUTTON = "Sort"
 end
 
 local Ingredient = GLOBAL.Ingredient
-
 --------------------------------------------------------------------------------------------------------------------------
 -- [Recipe]
+local rcp = nil
 local tec = GLOBAL.TECH.NONE
-local RcpType = TUNING.ROOMCAR_BIGBAG_RECIPE
+local RcpType = TUNING.ROOMCAR_HAVERSACK_RECIPE
+
+local RcpPlus = {Ingredient("purplegem", 1)}
+local RcpVC = {Ingredient("cutgrass", 1)}
+local RcpC = {Ingredient("pigskin", 5)}
+local RcpN = {Ingredient("goldnugget", 10), Ingredient("pigskin", 10)}
+local RcpE = {Ingredient("goldnugget", 20), Ingredient("pigskin", 10), Ingredient("nightmarefuel", 5)}
+local RcpVE = {Ingredient("goldnugget", 40), Ingredient("pigskin", 10), Ingredient("nightmarefuel", 20)}
 
 if RcpType == 1 then
+    rcp = RcpVC
     tec = GLOBAL.TECH.NONE
 elseif  RcpType == 2 then
+    rcp = RcpC
     tec = GLOBAL.TECH.SCIENCE_ONE
 elseif  RcpType == 3 then
+    rcp = RcpN
     tec = GLOBAL.TECH.SCIENCE_TWO
 elseif  RcpType == 4 then
+    rcp = RcpE
     tec = GLOBAL.TECH.MAGIC_ONE
 elseif  RcpType == 5 then
+    rcp = RcpVE
     tec = GLOBAL.TECH.MAGIC_TWO
 end
 
-local nicebigbag = AddRecipe("nicebigbag", 
-{Ingredient("goldnugget", 40), Ingredient("pigskin", 10), Ingredient("nightmarefuel", 20)},
-GLOBAL.RECIPETABS.SURVIVAL, -- tab
+if TUNING.ROOMCAR_HAVERSACK_FRESH and TUNING.ROOMCAR_HAVERSACK_STACK then
+    for _,v in ipairs(RcpPlus) do
+        table.insert(rcp,v)
+    end
+end
+
+AddRecipe("haver_sack",
+rcp,
+GLOBAL.RECIPETABS.REFINE, -- tab
 tec, -- level
 nil, -- placer
 nil, -- min_spacing

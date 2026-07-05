@@ -1,10 +1,10 @@
 --代码来自恒子大佬的能力勋章
 --存储容器坐标RPC
 AddModRPCHandler(
-	"bigbag",
-	"Bigbag_SetDragPos",
+	"HaverSack",
+	"HaverSack_SetDragPos",
 	function(player, bigbag_drag_pos)
-		player.bigbag_drag_pos:set(bigbag_drag_pos)
+		player.haver_sack_drag_pos:set(bigbag_drag_pos)
 		--重置容器位置
 		if bigbag_drag_pos=="" and player.components.inventory and player.components.inventory.opencontainers then
 			for k, v in pairs(player.components.inventory.opencontainers) do
@@ -19,7 +19,7 @@ AddModRPCHandler(
 
 --特有容器列表(封装在表里方便做兼容)
 local special_bigbag_box={
-	nicebigbag=true,--大挎包
+	haver_sack=true,--大挎包
 }
 
 --代码来自恒子大佬的能力勋章

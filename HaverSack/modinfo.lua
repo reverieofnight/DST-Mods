@@ -20,7 +20,7 @@ api_version = 10
 dst_compatible = true
 all_clients_require_mod = true
 client_only_mod = false
-server_filter_tags = {"Haversack", "RainyNight", "nicebigbag"}
+server_filter_tags = {"Haversack", "RainyNight", "haver_sack"}
 
 forumthread = ""
 icon_atlas = "modicon.xml"

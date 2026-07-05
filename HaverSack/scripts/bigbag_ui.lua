@@ -56,17 +56,17 @@ local slot_generators = {
 }
 
 local params = {}
-local vis = size_visuals[TUNING.NICE_BIGBAGSIZE]
-local slots = slot_generators[TUNING.NICE_BIGBAGSIZE]()
+local vis = size_visuals[TUNING.ROOMCAR_HAVERSACK_BIGBAGSIZE]
+local slots = slot_generators[TUNING.ROOMCAR_HAVERSACK_BIGBAGSIZE]()
 
 -- 构建容器参数
-params.nicebigbag = {
+params.haver_sack = {
     widget = {
         slotpos = slots,
         pos = default_pos,
-        dragtyp = "nicebigbag",
+        -- dragtyp 在容器打开时手动设置，避免与 origin mod 冲突
         buttoninfo = {
-            text = STRINGS.bigbag_BUTTON,
+            text = STRINGS.haver_sack_BUTTON,
             position = vis.btn_pos,
         },
     },
@@ -76,11 +76,11 @@ params.nicebigbag = {
 }
 -- 视觉：动画渲染 vs 背景图
 if vis.animbank then
-    params.nicebigbag.widget.animbank = vis.animbank
-    params.nicebigbag.widget.animbuild = vis.animbuild
+    params.haver_sack.widget.animbank = vis.animbank
+    params.haver_sack.widget.animbuild = vis.animbuild
 else
-    params.nicebigbag.widget.bgatlas = vis.bgatlas
-    params.nicebigbag.widget.bgimage = vis.bgimage
+    params.haver_sack.widget.bgatlas = vis.bgatlas
+    params.haver_sack.widget.bgimage = vis.bgimage
 end
 
 
@@ -128,7 +128,7 @@ local function slotsSort(inst)
 end
 
 --整理按钮逻辑
-function params.nicebigbag.widget.buttoninfo.fn(inst)
+function params.haver_sack.widget.buttoninfo.fn(inst)
     if inst.components.container ~= nil then
         if not inst.components.container:IsEmpty() then
             slotsSort(inst)
@@ -139,13 +139,13 @@ function params.nicebigbag.widget.buttoninfo.fn(inst)
 end
 
 --整理按钮亮起规则
-function params.nicebigbag.widget.buttoninfo.validfn(inst)
+function params.haver_sack.widget.buttoninfo.validfn(inst)
     return inst.replica.container ~= nil and not inst.replica.container:IsEmpty()
 end
 
 -- 放入时检测设定
-function params.nicebigbag.itemtestfn(container, item, slot)
-    return item.prefab ~= "nicebigbag"
+function params.haver_sack.itemtestfn(container, item, slot)
+    return item.prefab ~= "haver_sack"
 end
 
 
@@ -174,7 +174,7 @@ end
 ---------------------------------------------------------------------------------------------------------
 --获取拖拽坐标
 local function GetDragPos(key)
-    local saved = ThePlayer and ThePlayer.bigbag_drag_pos and ThePlayer.bigbag_drag_pos:value()
+    local saved = ThePlayer and ThePlayer.haver_sack_drag_pos and ThePlayer.haver_sack_drag_pos:value()
     if not saved then return end
     local parts = string.split(saved, ";")
     for _, part in ipairs(parts) do
@@ -189,7 +189,7 @@ local dragpos_cache = {}
 
 --更新同步拖拽坐标
 local function RefreshDragPos()
-    local saved = ThePlayer and ThePlayer.bigbag_drag_pos and ThePlayer.bigbag_drag_pos:value()
+    local saved = ThePlayer and ThePlayer.haver_sack_drag_pos and ThePlayer.haver_sack_drag_pos:value()
     if saved and saved ~= "" then
         local parts = string.split(saved, ";")
         for _, part in ipairs(parts) do
@@ -209,17 +209,17 @@ local function SaveDragPos()
         table.insert(parts, k .. "," .. v.x .. "," .. v.y .. "," .. v.z)
     end
     if #parts > 0 then
-        SendModRPCToServer(MOD_RPC.bigbag.Bigbag_SetDragPos, table.concat(parts, ";"))
+        SendModRPCToServer(MOD_RPC.HaverSack.HaverSack_SetDragPos, table.concat(parts, ";"))
     end
 end
 
 --设置UI可拖拽
 local function MakeDraggable(self, dragtyp)
     --添加拖拽提示
-    local is_large = TUNING.NICE_BIGBAGSIZE == 3 or TUNING.NICE_BIGBAGSIZE == 4
-    local is_small = TUNING.NICE_BIGBAGSIZE == 1 or TUNING.NICE_BIGBAGSIZE == 2
-    if TUNING.ROOMCAR_BIGBAG_CONTAINERDRAG_SWITCH then
-        local tip = STRINGS.bigbag_UI.DRAGABLETIPS1 .. string.sub(TUNING.ROOMCAR_BIGBAG_CONTAINERDRAG_SWITCH, -2) .. STRINGS.bigbag_UI.DRAGABLETIPS2
+    local is_large = TUNING.ROOMCAR_HAVERSACK_BIGBAGSIZE == 3 or TUNING.ROOMCAR_HAVERSACK_BIGBAGSIZE == 4
+    local is_small = TUNING.ROOMCAR_HAVERSACK_BIGBAGSIZE == 1 or TUNING.ROOMCAR_HAVERSACK_BIGBAGSIZE == 2
+    if TUNING.ROOMCAR_HAVERSACK_CONTAINERDRAG_SWITCH then
+        local tip = STRINGS.haver_sack_UI.DRAGABLETIPS1 .. string.sub(TUNING.ROOMCAR_HAVERSACK_CONTAINERDRAG_SWITCH, -2) .. STRINGS.haver_sack_UI.DRAGABLETIPS2
         if self.bgimage and is_large then
             self.bgimage:SetTooltip(tip)
         elseif self.bganim and is_small then
@@ -229,7 +229,7 @@ local function MakeDraggable(self, dragtyp)
 
     local oldOnControl = self.OnControl
     self.OnControl = function(self, control, down)
-        if TheInput:IsKeyDown(GLOBAL[TUNING.ROOMCAR_BIGBAG_CONTAINERDRAG_SWITCH or "KEY_F1"]) then
+        if TheInput:IsKeyDown(GLOBAL[TUNING.ROOMCAR_HAVERSACK_CONTAINERDRAG_SWITCH or "KEY_F1"]) then
             self:Drag_OnControl(control, down)
         end
         return oldOnControl(self, control, down)
@@ -257,7 +257,7 @@ local function MakeDraggable(self, dragtyp)
             self.dragOffset = self:GetPosition() - mouse
             self.followhandler = TheInput:AddMoveHandler(function(x, y)
                 self:Drag_SetPos(x, y, 0)
-                if not TheInput:IsKeyDown(GLOBAL[TUNING.ROOMCAR_BIGBAG_CONTAINERDRAG_SWITCH or "KEY_F1"]) then
+                if not TheInput:IsKeyDown(GLOBAL[TUNING.ROOMCAR_HAVERSACK_CONTAINERDRAG_SWITCH or "KEY_F1"]) then
                     self:Drag_Stop()
                 end
             end)
@@ -283,29 +283,36 @@ local function MakeDraggable(self, dragtyp)
 end
 
 --给容器添加拖拽功能
-if TUNING.ROOMCAR_BIGBAG_CONTAINERDRAG_SWITCH then
+if TUNING.ROOMCAR_HAVERSACK_CONTAINERDRAG_SWITCH then
     AddClassPostConstruct("widgets/containerwidget", function(self)
         local oldOpen = self.Open
         self.Open = function(self, ...)
-            oldOpen(self, ...)
             local container = self.container
-            if not (container and container.replica and container.replica.container) then return end
-            local widget = container.replica.container:GetWidget()
-            if not (widget and widget.dragtyp) then return end
+            local is_haver_sack = container and container.prefab == "haver_sack"
+            local widget = is_haver_sack and container.replica and container.replica.container and container.replica.container:GetWidget()
+            local old_dragtyp = nil
+            if widget and widget.dragtyp then
+                old_dragtyp = widget.dragtyp
+                widget.dragtyp = nil
+            end
+            oldOpen(self, ...)
+            if not is_haver_sack then return end
+            if not widget then return end
+            widget.dragtyp = "haver_sack"
 
-            if dragpos_cache[widget.dragtyp] == nil then
-                dragpos_cache[widget.dragtyp] = GetDragPos(widget.dragtyp)
+            if dragpos_cache["haver_sack"] == nil then
+                dragpos_cache["haver_sack"] = GetDragPos("haver_sack")
             end
             --可装备的容器首次打开延迟加载(否则读档时读不到坐标)
             if container:HasTag("_equippable") and not container.isopended then
                 container:DoTaskInTime(0, function()
-                    self:SetPosition(dragpos_cache[widget.dragtyp] or default_pos)
+                    self:SetPosition(dragpos_cache["haver_sack"] or default_pos)
                 end)
                 container.isopended = true
             else
-                self:SetPosition(dragpos_cache[widget.dragtyp] or default_pos)
+                self:SetPosition(dragpos_cache["haver_sack"] or default_pos)
             end
-            MakeDraggable(self, widget.dragtyp)
+            MakeDraggable(self, "haver_sack")
         end
     end)
 end
@@ -313,6 +320,6 @@ end
 --重置拖拽坐标
 function ResetBagUIPos()
     dragpos_cache = {}
-    SendModRPCToServer(MOD_RPC.bigbag.Bigbag_SetDragPos, "")
+    SendModRPCToServer(MOD_RPC.HaverSack.HaverSack_SetDragPos, "")
 end
-GLOBAL.ResetBagUIPos = ResetBagUIPos
+GLOBAL.ResetHaverSackBagUIPos = ResetBagUIPos
