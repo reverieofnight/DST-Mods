@@ -35,6 +35,8 @@ local BAGSIZE = GetModConfigData("BAGSIZE")
 local KEEPFRESH = GetModConfigData("KEEPFRESH")
 
 GLOBAL.TUNING.ROOMCAR_BIGBAG_KEEPFRESH = KEEPFRESH
+local CONTAINERDRAG_SWITCH = GetModConfigData("CONTAINERDRAG_SWITCH")
+GLOBAL.TUNING.ROOMCAR_BIGBAG_CONTAINERDRAG_SWITCH = CONTAINERDRAG_SWITCH
 
 local params = {}
 if BAGSIZE == 1 then
@@ -45,6 +47,7 @@ if BAGSIZE == 1 then
             animbank = "ui_krampusbag_2x8",
             animbuild = "ui_bigbag_3x8",
             pos = Vector3(-180, -75, 0),
+            dragtyp = "crosssack",
         },
         issidewidget = true,
         type = "pack",
@@ -63,6 +66,7 @@ elseif BAGSIZE == 2 then
             animbank = "ui_krampusbag_2x8",
             animbuild = "ui_bigbag_4x8",
             pos = Vector3(-180, -75, 0),
+            dragtyp = "crosssack",
         },
         issidewidget = true,
         type = "pack",
@@ -86,6 +90,7 @@ elseif BAGSIZE == 3 then
             bgatlas = "images/bigbagbg_8x6.xml",
             bgimage = "bigbagbg_8x6.tex",
             pos = Vector3(-180, -75, 0),
+            dragtyp = "crosssack",
         },
         issidewidget = true,
         type = "pack",
@@ -111,6 +116,7 @@ else
             bgatlas = "images/bigbagbg_8x8.xml",
             bgimage = "bigbagbg_8x8.tex",
             pos = Vector3(-180, -75, 0),
+            dragtyp = "crosssack",
         },
         issidewidget = true,
         type = "pack",
@@ -191,3 +197,157 @@ AddRecipe("crosssack",
 
 -- 注册到"储物方案"筛选器
 AddRecipeToFilter("crosssack", "CONTAINERS")
+
+--------------------------------------------------------------------------------------------------------------------------
+-- [Container Drag 背包拖拽]
+--------------------------------------------------------------------------------------------------------------------------
+STRINGS.CROSSSACK_UI = {
+    DRAGABLETIPS = "右键拖拽移动UI",
+}
+
+-- 容器默认坐标
+local default_pos = {
+    crosssack = Vector3(-150, -120, 0),
+}
+
+-- 拖拽坐标本地存储
+local dragpos = {}
+
+local function loadDragPos()
+    TheSim:GetPersistentString("crosssack_drag_pos", function(load_success, data)
+        if load_success and data ~= nil then
+            local success, allpos = RunInSandbox(data)
+            if success and allpos then
+                for k, v in pairs(allpos) do
+                    if dragpos[k] == nil then
+                        dragpos[k] = Vector3(v.x or 0, v.y or 0, v.z or 0)
+                    end
+                end
+            end
+        end
+    end)
+end
+
+local function saveDragPos()
+    if next(dragpos) then
+        local str = DataDumper(dragpos, nil, true)
+        TheSim:SetPersistentString("crosssack_drag_pos", str, false)
+    end
+end
+
+local function GetCrossSackDragPos(dragtyp)
+    if dragpos[dragtyp] == nil then
+        loadDragPos()
+    end
+    return dragpos[dragtyp]
+end
+
+-- 设置UI可拖拽（参考能力勋章的坐标算法）
+local function MakeCrossSackDragable(self, dragtarget, dragtyp)
+    self.candrag = true
+
+    -- 给拖拽目标添加拖拽提示和鼠标控制
+    if dragtarget then
+        dragtarget:SetTooltip(STRINGS.CROSSSACK_UI.DRAGABLETIPS)
+        local oldOnControl = dragtarget.OnControl
+        dragtarget.OnControl = function(self, control, down, ...)
+            local parentwidget = self:GetParent()
+            if parentwidget and parentwidget.Passive_OnControl then
+                parentwidget:Passive_OnControl(control, down)
+            end
+            if oldOnControl then
+                return oldOnControl(self, control, down, ...)
+            end
+        end
+    end
+
+    function self:Passive_OnControl(control, down)
+        if control == CONTROL_SECONDARY then
+            if down then
+                self:StartDrag()
+            else
+                self:EndDrag()
+            end
+        end
+    end
+
+    function self:SetDragPosition(x, y, z)
+        local pos
+        if type(x) == "number" then
+            pos = Vector3(x, y, z)
+        else
+            pos = x
+        end
+        local self_scale = self:GetScale()
+        local offset = 0.6 -- 容器偏移修正
+        local newpos = self.p_startpos + (pos - self.m_startpos) / (self_scale.x / offset)
+        self:SetPosition(newpos)
+    end
+
+    function self:StartDrag()
+        if not self.followhandler then
+            local mousepos = TheInput:GetScreenPosition()
+            self.m_startpos = mousepos
+            self.p_startpos = self:GetPosition()
+            self.followhandler = TheInput:AddMoveHandler(function(x, y)
+                self:SetDragPosition(x, y, 0)
+                if not TheInput:IsMouseDown(MOUSEBUTTON_RIGHT) then
+                    self:EndDrag()
+                end
+            end)
+            self:SetDragPosition(mousepos)
+        end
+    end
+
+    function self:EndDrag()
+        if self.followhandler then
+            self.followhandler:Remove()
+        end
+        self.followhandler = nil
+        self.m_startpos = nil
+        self.p_startpos = nil
+        if dragtyp then
+            dragpos[dragtyp] = self:GetPosition()
+        end
+        saveDragPos()
+    end
+end
+
+-- 只对CrossSack容器添加拖拽功能
+if CONTAINERDRAG_SWITCH then
+    AddClassPostConstruct("widgets/containerwidget", function(self)
+        local oldOpen = self.Open
+        self.Open = function(self, container, doer, ...)
+            oldOpen(self, container, doer, ...)
+            if self.container and self.container.replica.container then
+                local widget = self.container.replica.container:GetWidget()
+                if widget and widget.dragtyp == "crosssack" then
+                    -- 设置容器坐标（可装备容器第一次打开延迟处理）
+                    local newpos = GetCrossSackDragPos("crosssack") or default_pos["crosssack"]
+                    if newpos then
+                        if self.container:HasTag("_equippable") and not self.container.isopended then
+                            self.container:DoTaskInTime(0, function()
+                                self:SetPosition(newpos)
+                            end)
+                            self.container.isopended = true
+                        else
+                            self:SetPosition(newpos)
+                        end
+                    end
+                    -- 添加拖拽功能
+                    if not self.candrag then
+                        MakeCrossSackDragable(self, self.bgimage, "crosssack")
+                        MakeCrossSackDragable(self, self.bganim, "crosssack")
+                    end
+                end
+            end
+        end
+    end)
+end
+
+-- 重置拖拽坐标（gm指令）
+function ResetCrossSackUIPos()
+    dragpos = {}
+    TheSim:SetPersistentString("crosssack_drag_pos", "", false)
+end
+GLOBAL.ResetCrossSackUIPos = ResetCrossSackUIPos

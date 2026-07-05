@@ -41,6 +41,17 @@ configuration_options = {
         default = false,
     },
     {
+        name = "CONTAINERDRAG_SWITCH",
+        label = "Container Drag(背包拖拽)",
+        hover = "After opening, right-click and drag to move the crosssack's UI",
+        options =
+        {
+            {description = "Close(关闭)", data = false, hover = "关闭容器拖拽"},
+            {description = "Open(开启)", data = true, hover = "右键拖拽移动UI"},
+        },
+        default = true,
+    },
+    {
         name = "RECIPE",
         label = "Recipe (耗材)",
         hover = "Recipe cost.",
