@@ -1,5 +1,5 @@
 name = "更大的坎普斯背包"
-description = "修改坎普斯背包的格子大小，支持3x8/4x8可配置"
+description = "可配置坎普斯背包格子大小：原始2x7 / 3x8 / 4x8"
 author = "RainyNight"
 version = "1.0.0"
 api_version = 10
