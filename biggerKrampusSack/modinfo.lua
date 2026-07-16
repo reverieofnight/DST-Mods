@@ -1,5 +1,5 @@
 name = "更大的坎普斯背包"
-description = "将坎普斯背包的格子大小修改为3x7（共21格）"
+description = "将坎普斯背包的格子大小修改为3x8（共24格）"
 author = "YourName"
 version = "1.0.0"
 api_version = 10
@@ -16,3 +16,16 @@ dont_starve_compatible = false
 reign_of_giants_compatible = false
 shipwrecked_compatible = false
 hamlet_compatible = false
+
+configuration_options = {
+    {
+        name = "BAGSIZE",
+        label = "背包大小",
+        hover = "选择坎普斯背包的格子布局",
+        options = {
+            {description = "3x8 (24格)", data = "3x8"},
+            {description = "4x8 (32格)", data = "4x8"},
+        },
+        default = "3x8",
+    },
+}
