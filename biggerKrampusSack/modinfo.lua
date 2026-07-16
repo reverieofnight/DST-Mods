@@ -1,7 +1,7 @@
 name = "更大的坎普斯背包"
 description = "可配置坎普斯背包格子大小：原始2x7 / 3x8 / 4x8"
 author = "RainyNight"
-version = "1.0.0"
+version = "1.0.1"
 api_version = 10
 api_version_dst = 10
 dst_compatible = true
