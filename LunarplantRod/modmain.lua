@@ -172,6 +172,8 @@ local function SafePlantRetarget(inst)
                 local x, y, z = inst.Transform:GetWorldPosition()
                 local plants = TheSim:FindEntities(x, y, z, 15, PLANT_MUST)
                 for i, plant in ipairs(plants) do
+                    -- 与原版的唯一差异：跳过没有 combat 组件的"伪装实体"（避雷针/结晶器），
+                    -- 原版这里直接访问 plant.components.combat.target，带标签的无 combat 实体会崩溃。
                     if plant ~= inst and plant.components.combat ~= nil then
                         local plantcombat = plant.components.combat
                         if plantcombat.target ~= nil and plantcombat.target == guy then
@@ -221,6 +223,8 @@ local function SafePlantRetarget(inst)
     end
 end
 
+-- 用兼容版索敌覆盖原版：原版 Retarget 是 local 函数，mod 无法拿到引用做包装，
+-- 只能整段复制原版逻辑（含藤蔓生成流程）再替换，原版更新后需对比同步（见上方注释）。
 AddPrefabPostInit("lunarthrall_plant", function(inst)
     if not IsMasterSim() or inst.components.combat == nil then
         return
