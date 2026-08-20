@@ -211,9 +211,10 @@ end
 -- 勋章配置表
 local MEDAL_PREFABS = {
     "transplant_certificate",
-    "multivariate_certificate", 
+    "multivariate_certificate",
     "medium_multivariate_certificate",
-    "large_multivariate_certificate"
+    "large_multivariate_certificate",
+    "origin_certificate"
 }
 
 -- 批量初始化勋章
